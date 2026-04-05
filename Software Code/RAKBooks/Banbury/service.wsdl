@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+    name="BookService"
+    targetNamespace="urn:BanburyBookService"
+    xmlns="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="urn:BanburyBookService">
+
+    <types> <!-- Schema definitions for the service -->
+        <xsd:schema targetNamespace="urn:BanburyBookService"> <!-- XML Schema for data types -->
+
+            <xsd:element name="removeBook"> <!-- Request structure for removing a book -->
+                <xsd:complexType>
+                    <xsd:sequence> <!-- Sequence of elements in the request -->
+                        <xsd:element name="isbn" type="xsd:string"/> <!-- ISBN of the book to be removed -->
+                    </xsd:sequence>
+                </xsd:complexType> <!-- End of complex type definition -->
+            </xsd:element>
+
+            <xsd:element name="removeBookResponse"> <!-- Response structure for removing a book -->
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="success" type="xsd:boolean"/>
+                        <xsd:element name="message" type="xsd:string"/> <!-- Message indicating the result of the operation -->
+                    </xsd:sequence>
+                </xsd:complexType> <!-- End of complex type definition -->
+            </xsd:element>
+
+            <xsd:element name="getBooks">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="supplierID" type="xsd:string"/> <!-- ID of the book supplier -->
+                    </xsd:sequence>
+                </xsd:complexType> <!-- End of complex type definition -->
+            </xsd:element>
+
+            <xsd:element name="getBooksResponse"> <!-- Response structure for retrieving books -->
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="books" minOccurs="0" maxOccurs="unbounded"> <!-- List of books returned -->
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="isbn" type="xsd:string"/>
+                                    <xsd:element name="title" type="xsd:string"/> <!-- Title of the book -->
+                                    <xsd:element name="author" type="xsd:string"/>
+                                    <xsd:element name="price" type="xsd:float"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="placeOrder"> <!-- Request structure for placing an order -->
+                <xsd:complexType>
+                    <xsd:sequence> <!-- Sequence of elements in the request -->
+                        <xsd:element name="username" type="xsd:string"/>
+                        <xsd:element name="user_address" type="xsd:string"/> <!-- Address of the user placing the order -->
+                        <xsd:element name="mode_of_payment" type="xsd:string"/>
+                        <xsd:element name="book_id" type="xsd:string"/>
+                        <xsd:element name="customer_id" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="placeOrderResponse"> <!-- Response structure for placing an order -->
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="success" type="xsd:boolean"/> <!-- Indicates if the order was placed successfully -->
+                        <xsd:element name="order_id" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+        </xsd:schema>
+    </types>
+
+    <message name="removeBookRequest"> <!-- Message structure for removeBook request -->
+        <part name="parameters" element="tns:removeBook"/> <!-- Reference to the removeBook element defined in the types section -->
+    </message>
+
+    <message name="removeBookResponse"> <!-- Message structure for removeBook response -->
+        <part name="parameters" element="tns:removeBookResponse"/>
+    </message>
+
+    <message name="getBooksRequest"> <!-- Message structure for getBooks request -->
+        <part name="parameters" element="tns:getBooks"/>
+    </message>
+
+    <message name="getBooksResponse"> <!-- Message structure for getBooks response -->
+        <part name="parameters" element="tns:getBooksResponse"/>
+    </message>
+
+    <message name="placeOrderRequest"> <!-- Message structure for placeOrder request -->
+        <part name="parameters" element="tns:placeOrder"/>
+    </message>
+
+    <message name="placeOrderResponse"> <!-- Message structure for placeOrder response -->
+        <part name="parameters" element="tns:placeOrderResponse"/>
+    </message>
+
+    <portType name="BookServicePort"> <!-- Definition of the service port type -->
+
+        <operation name="removeBook"> <!-- Definition of the removeBook operation -->
+            <input message="tns:removeBookRequest"/> <!-- Input message for the operation -->
+            <output message="tns:removeBookResponse"/>
+        </operation>
+
+        <operation name="getBooks"> <!-- Definition of the getBooks operation -->
+            <input message="tns:getBooksRequest"/>
+            <output message="tns:getBooksResponse"/>
+        </operation>
+
+        <operation name="placeOrder"> <!-- Definition of the placeOrder operation -->
+            <input message="tns:placeOrderRequest"/>
+            <output message="tns:placeOrderResponse"/>
+        </operation>
+
+    </portType>
+ 
+    <binding name="BookServiceBinding" type="tns:BookServicePort"> <!-- Binding definition for the service port type -->
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/> <!-- SOAP binding style and transport -->
+
+        <operation name="removeBook">
+            <soap:operation soapAction="urn:BanburyBookService#removeBook" style="document"/> <!-- SOAP operation definition -->
+            <input><soap:body use="literal"/></input> <!-- Input message format -->
+            <output><soap:body use="literal"/></output>
+        </operation>
+
+        <operation name="getBooks"> <!-- Definition of the getBooks operation -->
+            <soap:operation soapAction="urn:BanburyBookService#getBooks" style="document"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+
+        <operation name="placeOrder"> <!-- Definition of the placeOrder operation -->
+            <soap:operation soapAction="urn:BanburyBookService#placeOrder" style="document"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+
+    </binding>
+
+    <service name="BanburyBookService"> <!-- Service definition -->
+        <port name="BookServicePort" binding="tns:BookServiceBinding"> <!-- Port definition for the service -->
+            <soap:address location="http://localhost/RAKBooks/Banbury/server.php"/> <!-- Endpoint URL for the service -->
+        </port>
+    </service>
+
+</definitions>

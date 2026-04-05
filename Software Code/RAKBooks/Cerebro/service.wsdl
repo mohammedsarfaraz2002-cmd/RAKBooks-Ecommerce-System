@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+    name="CerebroBookService"
+    targetNamespace="urn:CerebroBookService"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="urn:CerebroBookService">
+
+    <types>
+        <xsd:schema targetNamespace="urn:CerebroBookService">
+            <xsd:element name="removeBook">
+                <xsd:complexType><xsd:sequence><xsd:element name="isbn" type="xsd:string"/></xsd:sequence></xsd:complexType>
+            </xsd:element>
+            <xsd:element name="removeBookResponse">
+                <xsd:complexType><xsd:sequence><xsd:element name="success" type="xsd:boolean"/><xsd:element name="message" type="xsd:string"/></xsd:sequence></xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getBooks">
+                <xsd:complexType><xsd:sequence><xsd:element name="supplierID" type="xsd:string"/></xsd:sequence></xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getBooksResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="books" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType><xsd:sequence>
+                                <xsd:element name="isbn" type="xsd:string"/><xsd:element name="title" type="xsd:string"/><xsd:element name="author" type="xsd:string"/><xsd:element name="price" type="xsd:float"/>
+                            </xsd:sequence></xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="placeOrder">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="username" type="xsd:string"/><xsd:element name="user_address" type="xsd:string"/><xsd:element name="mode_of_payment" type="xsd:string"/><xsd:element name="book_id" type="xsd:string"/><xsd:element name="customer_id" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="placeOrderResponse">
+                <xsd:complexType><xsd:sequence><xsd:element name="success" type="xsd:boolean"/><xsd:element name="order_id" type="xsd:int"/></xsd:sequence></xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </types>
+
+    <message name="removeBookRequest"><part name="parameters" element="tns:removeBook"/></message>
+    <message name="removeBookResponse"><part name="parameters" element="tns:removeBookResponse"/></message>
+    <message name="getBooksRequest"><part name="parameters" element="tns:getBooks"/></message>
+    <message name="getBooksResponse"><part name="parameters" element="tns:getBooksResponse"/></message>
+    <message name="placeOrderRequest"><part name="parameters" element="tns:placeOrder"/></message>
+    <message name="placeOrderResponse"><part name="parameters" element="tns:placeOrderResponse"/></message>
+
+    <portType name="BookServicePort">
+        <operation name="removeBook"><input message="tns:removeBookRequest"/><output message="tns:removeBookResponse"/></operation>
+        <operation name="getBooks"><input message="tns:getBooksRequest"/><output message="tns:getBooksResponse"/></operation>
+        <operation name="placeOrder"><input message="tns:placeOrderRequest"/><output message="tns:placeOrderResponse"/></operation>
+    </portType>
+
+    <binding name="BookServiceBinding" type="tns:BookServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="removeBook">
+            <soap:operation soapAction="urn:CerebroBookService#removeBook"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="getBooks">
+            <soap:operation soapAction="urn:CerebroBookService#getBooks"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output>
+        </operation>
+        <operation name="placeOrder">
+            <soap:operation soapAction="urn:CerebroBookService#placeOrder"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output>
+        </operation>
+    </binding>
+
+    <service name="CerebroBookService">
+        <port name="BookServicePort" binding="tns:BookServiceBinding">
+            <soap:address location="http://localhost/RAKBooks/Cerebro/server.php"/>
+        </port>
+    </service>
+</definitions>
